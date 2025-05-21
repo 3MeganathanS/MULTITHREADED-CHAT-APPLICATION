@@ -1,32 +1,38 @@
-import java.io.*;
-import java.net.*;
+//import statements
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+
+import java.net.Socket;
 
 public class ChatClient {
-    public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost", 1234);
-        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
-        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) {
+        try (Socket socket = new Socket("localhost", 1234);
+             BufferedReader serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter serverOut = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in))) {
 
-        // Thread to read messages from server
-        Thread reader = new Thread(() -> {
-            String msg;
-            try {
-                while ((msg = input.readLine()) != null) {
-                    System.out.println(msg);
+            // Thread to print incoming messages
+            Thread listener = new Thread(() -> {
+                try {
+                    String incoming;
+                    while ((incoming = serverIn.readLine()) != null) {
+                        System.out.println(incoming);
+                    }
+                } catch (IOException ex) {
+                    System.out.println("Lost connection to server.");
                 }
-            } catch (IOException e) {
-                System.out.println("Disconnected from server.");
+            });
+            listener.start();
+
+            // Main loop to send user input
+            String userInput;
+            while ((userInput = consoleIn.readLine()) != null) {
+                serverOut.println(userInput);
             }
-        });
-        reader.start();
-
-        // Main thread to send messages
-        String userMsg;
-        while ((userMsg = keyboard.readLine()) != null) {
-            output.println(userMsg);
+        } catch (IOException ex) {
+            System.err.println("Client error: " + ex.getMessage());
         }
-
-        socket.close();
     }
 }
