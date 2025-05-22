@@ -103,3 +103,8 @@ Task 3 involves designing and implementing a robust client–server chat applica
 * Leveraged online resources (official docs, tutorials, ChatGPT) to accelerate development and problem-solving.
 
 ---
+
+## Output
+![Image](https://github.com/user-attachments/assets/3ea93583-a57a-4510-9299-43bc4952df4a)
+![Image](https://github.com/user-attachments/assets/4f729a83-284a-4c52-a1b4-9587944682d5)
+![Image](https://github.com/user-attachments/assets/70b26617-6181-436a-a0b5-fc71e328ae12)
